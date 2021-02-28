@@ -12,14 +12,17 @@ ALIB=libuwimg.a
 EXEC=uwimg
 OBJDIR=./obj/
 
-CC=gcc
-CPP=g++ -std=c++11 
+CC=zig cc
+CPP=zig c++
+ZIG=zig build-obj
 AR=ar
 ARFLAGS=rcs
 OPTS=-Ofast
+ZOPTS=-O ReleaseSafe
 LDFLAGS= -lm -pthread 
 COMMON= -Iinclude/ -Isrc/ 
 CFLAGS=-Wall -Wno-unknown-pragmas -Wfatal-errors -fPIC
+ZFLAGS=--single-threaded -fPIC --enable-cache --cache-dir $(OBJDIR)
 
 ifeq ($(OPENMP), 1) 
 CFLAGS+= -fopenmp
@@ -27,6 +30,7 @@ endif
 
 ifeq ($(DEBUG), 1) 
 OPTS=-O0 -g
+ZOPTS=-O Debug
 COMMON= -Iinclude/ -Isrc/ 
 else
 CFLAGS+= 
@@ -59,10 +63,15 @@ $(SLIB): $(OBJS)
 	$(CC) $(CFLAGS) -shared $^ -o $@ $(LDFLAGS)
 
 $(OBJDIR)%.o: %.c $(DEPS)
+	echo "beep"
 	$(CC) $(COMMON) $(CFLAGS) -c $< -o $@
 
 $(OBJDIR)%.o: %.cpp $(DEPS)
 	$(CPP) $(COMMON) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)%.o: %.zig $(DEPS)
+	echo "hello"
+	$(ZIG) $(COMMON) $(ZFLAGS) $<
 
 obj:
 	mkdir -p obj

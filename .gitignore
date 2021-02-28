@@ -6,6 +6,7 @@
 .fuse*
 libuwimg*
 uwimg
+zig-cache/
 
 # OS Generated #
 .DS_Store*
