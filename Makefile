@@ -49,29 +49,32 @@ EXOBJS = $(addprefix $(OBJDIR), $(EXOBJ))
 OBJS = $(addprefix $(OBJDIR), $(OBJ))
 DEPS = $(wildcard src/*.h) Makefile 
 
-all: obj $(SLIB) $(ALIB) $(EXEC)
-#all: obj $(EXEC)
-
+all: obj $(EXEC)
+alib: obj $(ALIB)
+slib: obj $(SLIB)
 
 $(EXEC): $(EXOBJS) $(OBJS)
+	rm -rf $(OBJDIR)/o $(OBJDIR)/h
 	$(CC) $(COMMON) $(CFLAGS) $^ -o $@ $(LDFLAGS) 
 
 $(ALIB): $(OBJS)
+	rm -rf $(OBJDIR)/o $(OBJDIR)/h
 	$(AR) $(ARFLAGS) $@ $^
 
 $(SLIB): $(OBJS)
+	rm -rf $(OBJDIR)/o $(OBJDIR)/h
 	$(CC) $(CFLAGS) -shared $^ -o $@ $(LDFLAGS)
 
 $(OBJDIR)%.o: %.c $(DEPS)
-	echo "beep"
 	$(CC) $(COMMON) $(CFLAGS) -c $< -o $@
 
 $(OBJDIR)%.o: %.cpp $(DEPS)
 	$(CPP) $(COMMON) $(CFLAGS) -c $< -o $@
 
 $(OBJDIR)%.o: %.zig $(DEPS)
-	echo "hello"
 	$(ZIG) $(COMMON) $(ZFLAGS) $<
+	cd $(OBJDIR) && find . -name '*.o' -exec mv {} . \;
+
 
 obj:
 	mkdir -p obj
