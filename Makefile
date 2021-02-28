@@ -22,7 +22,7 @@ ZOPTS=-O ReleaseSafe
 LDFLAGS= -lm -pthread 
 COMMON= -Iinclude/ -Isrc/ 
 CFLAGS=-Wall -Wno-unknown-pragmas -Wfatal-errors -fPIC
-ZFLAGS=--single-threaded -fPIC --enable-cache --cache-dir $(OBJDIR)
+ZFLAGS=--single-threaded -fPIC -target x86_64-linux-musl --library c --enable-cache --cache-dir $(OBJDIR) 
 
 ifeq ($(OPENMP), 1) 
 CFLAGS+= -fopenmp
